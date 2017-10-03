@@ -3,13 +3,6 @@
 
 
 #############Load the FARS Data into R###################
-#Put them here just to show the process been did for the assignment
-#install.packages("readr")
-#install.packages("haven")
-#install.packages("dplyr")
-#install.packages("tidyr")
-#install.packages("stringr")
-#install.packages("ggplot2")
 
 library(readr)
 library(haven)
@@ -63,4 +56,32 @@ acc <- rename(acc, "CountyFIPSCode" = "COUNTY")
 acc <- left_join(acc, fips, by = c("StateFIPSCode", "CountyFIPSCode"))
 
 ################Exploratory Data Analysis in R’s dplyr and tidyr package############
+# Step by step
+agg <- acc %>%
+         group_by(StateName,YEAR) %>%
+         summarise(TOTAL = sum(FATALS))
 
+agg_wide <-agg %>% spread(YEAR, TOTAL)
+agg_wide <- rename(agg_wide, "Year2014" = '2014', "Year2015" = '2015')
+
+agg_wide <- agg_wide %>% mutate(Diff_Percent = (Year2015-Year2014)/((Year2014+Year2014)/2))
+
+agg_wide <- arrange(agg_wide, Diff_Percent)
+
+agg_wide <- agg_wide %>%
+              filter(!is.na(StateName))
+
+agg <- agg_wide %>%
+              filter(Diff_Percent > 0.15 )
+glimpse(agg)
+
+
+#The whole chain
+agg_wide <-acc %>%
+            group_by(StateName,YEAR) %>%
+            summarise(TOTAL = sum(FATALS))%>% spread(YEAR, TOTAL) %>%
+            rename("Year2014" = '2014', "Year2015" = '2015')%>% 
+            mutate(Diff_Percent = (Year2015-Year2014)/((Year2014+Year2014)/2)) %>%
+            arrange(Diff_Percent) %>%
+            filter(!is.na(StateName))%>%
+            filter(Diff_Percent > 0.15 ) %>%glimpse

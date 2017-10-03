@@ -49,4 +49,18 @@ count(acc, RUR_URB)
 
 
 ############Merging on another data source####################
+fips <- read_csv("fips.csv")
+glimpse(fips)
+
+acc$STATE <- as.character(as.numeric(acc$STATE))
+acc$COUNTY <- as.character(as.numeric(acc$COUNTY))
+
+acc$STATE <- str_pad(acc$STATE, 2, pad = "0")
+acc$COUNTY <- str_pad(acc$COUNTY, 3, pad = "0")
+
+acc <- rename(acc, "StateFIPSCode" = "STATE")
+acc <- rename(acc, "CountyFIPSCode" = "COUNTY")
+acc <- left_join(acc, fips, by = c("StateFIPSCode", "CountyFIPSCode"))
+
+################Exploratory Data Analysis in R’s dplyr and tidyr package############
 

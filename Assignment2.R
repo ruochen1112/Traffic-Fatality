@@ -2,7 +2,7 @@
 #This file is an exploratory analysis of the DoT FARS data.
 
 
-#############Load the FARS Data into R###################
+#############Open RStudio and Install Pertinent Packages###################
 
 library(readr)
 library(haven)
@@ -10,6 +10,8 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+
+#############Load the FARS Data into R###################
 
 acc2014 <- read_sas("accident.sas7bdat")
 acc2015 <- read_csv("accident.csv")
